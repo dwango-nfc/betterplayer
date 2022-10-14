@@ -469,7 +469,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 
         int64_t duration = [BetterPlayerTimeUtils FLTCMTimeToMillis:(_player.currentItem.asset.duration)];
        // if (_overriddenDuration > 0 && duration > _overriddenDuration){
-            _player.currentItem.forwardPlaybackEndTime = CMTimeMake(_overriddenDuration/1000, 1);
+            _player.currentItem.forwardPlaybackEndTime = CMTimeMake(3500/1000, 1);
        // }
 
         _isInitialized = true;
