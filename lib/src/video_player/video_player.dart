@@ -216,6 +216,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       videoEventStreamController.add(event);
       switch (event.eventType) {
         case VideoEventType.initialized:
+          print('VideoEventType.initialized');
+          print(event.duration);
           value = value.copyWith(
             duration: event.duration,
             size: event.size,
