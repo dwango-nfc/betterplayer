@@ -299,6 +299,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     Duration? overriddenDuration,
     String? activityName,
   }) {
+    print('Asset data source');
     return _setDataSource(
       DataSource(
         sourceType: DataSourceType.asset,
@@ -344,6 +345,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     String? clearKey,
     String? videoExtension,
   }) {
+    print('Network data source');
     return _setDataSource(
       DataSource(
         sourceType: DataSourceType.network,
