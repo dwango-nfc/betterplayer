@@ -216,7 +216,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       videoEventStreamController.add(event);
       switch (event.eventType) {
         case VideoEventType.initialized:
-
           value = value.copyWith(
             duration: event.duration,
             size: event.size,
@@ -254,6 +253,9 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.pipStop:
           value = value.copyWith(isPip: false);
+          break;
+        case VideoEventType.updateDuration:
+          value = value.copyWith(duration: event.duration);
           break;
         case VideoEventType.unknown:
           break;

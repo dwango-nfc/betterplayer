@@ -22,6 +22,7 @@ class BetterPlayerController {
   static const String _dataSourceParameter = "dataSource";
   static const String _authorizationHeader = "Authorization";
 
+
   ///General configuration used in controller instance.
   final BetterPlayerConfiguration betterPlayerConfiguration;
 
@@ -232,11 +233,12 @@ class BetterPlayerController {
   }
 
   ///Setup new data source in Better Player.
-  Future setupDataSource(BetterPlayerDataSource betterPlayerDataSource) async {
+  Future setupDataSource(BetterPlayerDataSource betterPlayerDataSource,{ Duration? liveDuration}) async {
     postEvent(BetterPlayerEvent(BetterPlayerEventType.setupDataSource,
         parameters: <String, dynamic>{
           _dataSourceParameter: betterPlayerDataSource,
         }));
+
     _postControllerEvent(BetterPlayerControllerEvent.setupDataSource);
     _hasCurrentDataSourceStarted = false;
     _hasCurrentDataSourceInitialized = false;
@@ -247,7 +249,8 @@ class BetterPlayerController {
     if (videoPlayerController == null) {
       videoPlayerController = VideoPlayerController(
           bufferingConfiguration:
-              betterPlayerDataSource.bufferingConfiguration);
+              betterPlayerDataSource.bufferingConfiguration,
+      );
       videoPlayerController?.addListener(_onVideoPlayerChanged);
     }
 
@@ -1169,6 +1172,18 @@ class BetterPlayerController {
         ///TODO: Handle when needed
         break;
     }
+  }
+
+  void updateDuration({required Duration duration}){
+    _postEvent(
+      BetterPlayerEvent(
+        BetterPlayerEventType.updateDuration,
+        parameters: <String, dynamic>{
+          _durationParameter: duration
+        },
+      ),
+    );
+
   }
 
   ///Setup controls always visible mode
