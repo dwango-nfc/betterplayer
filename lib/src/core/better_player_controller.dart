@@ -1185,6 +1185,7 @@ class BetterPlayerController {
     );
     videoPlayerController?.value.copyWith(duration: duration);
     print('-----DEBUG------');
+    print('-----DEBUG------');
     print(duration);
   }
 
