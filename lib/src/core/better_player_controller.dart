@@ -1183,7 +1183,7 @@ class BetterPlayerController {
         },
       ),
     );
-
+    videoPlayerController?.value.copyWith(duration: duration);
   }
 
   ///Setup controls always visible mode
