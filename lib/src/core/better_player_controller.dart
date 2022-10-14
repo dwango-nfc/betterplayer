@@ -762,6 +762,7 @@ class BetterPlayerController {
 
   ///Listener used to handle video player changes.
   void _onVideoPlayerChanged() async {
+    print('----_onVideoPlayerChanged-----');
     final VideoPlayerValue currentVideoPlayerValue =
         videoPlayerController?.value ??
             VideoPlayerValue(duration: const Duration());
