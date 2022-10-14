@@ -1184,6 +1184,8 @@ class BetterPlayerController {
       ),
     );
     videoPlayerController?.value.copyWith(duration: duration);
+    print('-----DEBUG------');
+    print(duration);
   }
 
   ///Setup controls always visible mode
