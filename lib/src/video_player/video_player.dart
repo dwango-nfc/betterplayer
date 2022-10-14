@@ -123,6 +123,7 @@ class VideoPlayerValue {
     double? speed,
     bool? isPip,
   }) {
+    print('Copy with ');
     return VideoPlayerValue(
       duration: duration ?? this.duration,
       size: size ?? this.size,
