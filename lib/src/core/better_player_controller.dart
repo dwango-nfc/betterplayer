@@ -1174,18 +1174,6 @@ class BetterPlayerController {
     }
   }
 
-  void updateDuration({required Duration duration}){
-    _postEvent(
-      BetterPlayerEvent(
-        BetterPlayerEventType.updateDuration,
-        parameters: <String, dynamic>{
-          _durationParameter: duration
-        },
-      ),
-    );
-    videoPlayerController?.value.copyWith(duration: duration);
-  }
-
   ///Setup controls always visible mode
   void setControlsAlwaysVisible(bool controlsAlwaysVisible) {
     _controlsAlwaysVisible = controlsAlwaysVisible;
