@@ -175,7 +175,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
 
     this.bufferingConfiguration = const BetterPlayerBufferingConfiguration(),
     bool autoCreate = true,
-  }) : super(VideoPlayerValue(duration:  null)) {
+  }) : super(VideoPlayerValue(duration: null)) {
     if (autoCreate) {
       _create();
     }
@@ -253,9 +253,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.pipStop:
           value = value.copyWith(isPip: false);
-          break;
-        case VideoEventType.updateDuration:
-          value = value.copyWith(duration: event.duration);
           break;
         case VideoEventType.unknown:
           break;
