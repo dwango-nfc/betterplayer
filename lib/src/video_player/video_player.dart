@@ -123,7 +123,6 @@ class VideoPlayerValue {
     double? speed,
     bool? isPip,
   }) {
-    print('Copy with ');
     return VideoPlayerValue(
       duration: duration ?? this.duration,
       size: size ?? this.size,
@@ -217,8 +216,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       videoEventStreamController.add(event);
       switch (event.eventType) {
         case VideoEventType.initialized:
-          print('VideoEventType.initialized');
-          print(event.duration);
           value = value.copyWith(
             duration: event.duration,
             size: event.size,
@@ -299,7 +296,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     Duration? overriddenDuration,
     String? activityName,
   }) {
-    print('Asset data source');
     return _setDataSource(
       DataSource(
         sourceType: DataSourceType.asset,
@@ -345,7 +341,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     String? clearKey,
     String? videoExtension,
   }) {
-    print('Network data source');
     return _setDataSource(
       DataSource(
         sourceType: DataSourceType.network,

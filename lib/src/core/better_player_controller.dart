@@ -762,7 +762,6 @@ class BetterPlayerController {
 
   ///Listener used to handle video player changes.
   void _onVideoPlayerChanged() async {
-    print('----_onVideoPlayerChanged-----');
     final VideoPlayerValue currentVideoPlayerValue =
         videoPlayerController?.value ??
             VideoPlayerValue(duration: const Duration());
@@ -1185,9 +1184,6 @@ class BetterPlayerController {
       ),
     );
     videoPlayerController?.value.copyWith(duration: duration);
-    print('-----DEBUG------');
-    print('-----DEBUG------');
-    print(duration);
   }
 
   ///Setup controls always visible mode
