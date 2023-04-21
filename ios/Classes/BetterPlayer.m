@@ -39,6 +39,7 @@ AVPictureInPictureController *_pipController;
 - (nonnull UIView *)view {
     BetterPlayerView *playerView = [[BetterPlayerView alloc] initWithFrame:CGRectZero];
     playerView.player = _player;
+    self._betterPlayerView = playerView;
     return playerView;
 }
 
@@ -236,7 +237,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     _stalledCount = 0;
     _isStalledCheckStarted = false;
     _playerRate = 1;
-    [_player replaceCurrentItemWithPlayerItem:item];
+    [_player replaceCurrentItemWithPlayerItem:item]; // NOTE: AVPlayerにコンテンツを設定している
 
     if (!@available(iOS 16.0, *)) {
          // https://dw-ml-nfc.atlassian.net/browse/DAF-3642
@@ -501,11 +502,18 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     _isStalledCheckStarted = false;
     _isPlaying = true;
     [self updatePlayingState];
+
+    // 正しくはflutterからしかるべき条件で呼び出す
+    if (!_pipController) {
+        [self preparePictureInPicture: CGRectZero];
+    }
 }
 
 - (void)pause {
     _isPlaying = false;
     [self updatePlayingState];
+
+    _pipController = nil;
 }
 
 - (int64_t)position {
@@ -622,7 +630,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     }
 }
 
-- (void)setupPipController {
+- (void)setupPipControllerOriginal {
     if (@available(iOS 9.0, *)) {
         [[AVAudioSession sharedInstance] setActive: YES error: nil];
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -635,11 +643,27 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     }
 }
 
+- (void)setupPipController {
+    if (@available(iOS 9.0, *)) {
+        [[AVAudioSession sharedInstance] setActive: YES error: nil];
+        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+        AVPlayerLayer *playerLayer = self._betterPlayerView.playerLayer; // 取っておいた_betterPlayerViewを使う
+
+        if (!_pipController && playerLayer && [AVPictureInPictureController isPictureInPictureSupported]) {
+            _pipController = [[AVPictureInPictureController alloc] initWithPlayerLayer: playerLayer];
+            _pipController.delegate = self;
+        }
+    } else {
+        // Fallback on earlier versions
+    }
+}
+
 - (void) enablePictureInPicture: (CGRect) frame{
     [self disablePictureInPicture];
     [self usePlayerLayer:frame];
 }
 
+// PIP用にPlayerLayerを作成している.逆に通常状態で表示している動画はどうやって構成されている？
 - (void)usePlayerLayer: (CGRect) frame
 {
     if( _player )
@@ -658,14 +682,35 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         [self setupPipController];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)),
                        dispatch_get_main_queue(), ^{
-            [self setPictureInPicture:true];
+            [self setPictureInPicture:true]; // この先で startPictureInPicture している
         });
+    }
+}
+
+- (void)preparePictureInPicture: (CGRect) frame
+{
+    if( _player ) {
+        //メモ 正直この部分がなぜ必要かわかっていないが、必要っぽい
+        // Create new controller passing reference to the AVPlayerLayer
+        self._playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+        UIViewController* vc = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+        self._playerLayer.frame = frame;
+        self._playerLayer.needsDisplayOnBoundsChange = YES;
+        //  [self._playerLayer addObserver:self forKeyPath:readyForDisplayKeyPath options:NSKeyValueObservingOptionNew context:nil];
+        [vc.view.layer addSublayer:self._playerLayer];
+        vc.view.layer.needsDisplayOnBoundsChange = YES;
+
+        if (@available(iOS 9.0, *)) {
+            _pipController = NULL;
+        }
+        [self setupPipController];
     }
 }
 
 - (void)disablePictureInPicture
 {
-    [self setPictureInPicture:true];
+    [self setPictureInPicture:true]; // なぜtrue? 不明
+//    [self setPictureInPicture:false];
     if (__playerLayer){
         [self._playerLayer removeFromSuperlayer];
         self._playerLayer = nil;
@@ -688,15 +733,15 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 }
 
 - (void)pictureInPictureControllerWillStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
-
+    NSLog(@"pictureInPictureControllerWillStopPictureInPicture");
 }
 
 - (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
-
+    NSLog(@"pictureInPictureControllerWillStartPictureInPicture");
 }
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController failedToStartPictureInPictureWithError:(NSError *)error {
-
+    NSLog(@"failedToStartPictureInPictureWithError");
 }
 
 - (void)pictureInPictureController:(AVPictureInPictureController *)pictureInPictureController restoreUserInterfaceForPictureInPictureStopWithCompletionHandler:(void (^)(BOOL))completionHandler {
