@@ -450,6 +450,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             val params = PictureInPictureParams.Builder()
                 .setAspectRatio(PIP_ASPECT_RATIO)
                 .setSourceRectHint(Rect())
+                .setSeamlessResizeEnabled(false)
                 .setAutoEnterEnabled(willStartPIP)
                 .build()
             activity?.setPictureInPictureParams(params)
