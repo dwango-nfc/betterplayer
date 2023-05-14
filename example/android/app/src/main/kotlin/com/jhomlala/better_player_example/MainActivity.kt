@@ -65,6 +65,7 @@ class MainActivity : FlutterActivity() {
         newConfig: Configuration
     ) {
         eventSink?.success(isInPictureInPictureMode)
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
     }
 
 }
