@@ -221,10 +221,10 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             SETUP_AUTOMATIC_PICTURE_IN_PICTURE_TRANSITION -> {
                 val willStartPIP = call.argument<Boolean?>(WILL_START_PIP)!!
                 val rect = Rect(
-                    call.argument<Double>("left")!!.toInt(),
-                    call.argument<Double>("top")!!.toInt(),
-                    call.argument<Double>("right")!!.toInt(),
-                    call.argument<Double>("bottom")!!.toInt()
+                    call.argument<Double>("left")?.toInt() ?: 0,
+                    call.argument<Double>("top")?.toInt() ?: 0,
+                    call.argument<Double>("right")?.toInt() ?: 0,
+                    call.argument<Double>("bottom")?.toInt() ?: 0,
                 )
                 setupAutomaticPictureInPictureTransition(willStartPIP, player, rect)
                 result.success(null)
