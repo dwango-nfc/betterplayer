@@ -613,6 +613,6 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private const val DISPOSE_METHOD = "dispose"
         private const val PRE_CACHE_METHOD = "preCache"
         private const val STOP_PRE_CACHE_METHOD = "stopPreCache"
-        private val PIP_ASPECT_RATIO = Rational(16, 16)
+        private val PIP_ASPECT_RATIO = Rational(16, 9)
     }
 }
