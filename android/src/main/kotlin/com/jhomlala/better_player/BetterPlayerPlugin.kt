@@ -459,7 +459,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             player.setupMediaSession(flutterState!!.applicationContext)
             val params = PictureInPictureParams.Builder()
                 .setAspectRatio(PIP_ASPECT_RATIO)
-                .setSourceRectHint(rect)
+//                .setSourceRectHint(rect)
                 .setSeamlessResizeEnabled(true)
                 .setAutoEnterEnabled(willStartPIP)
                 .build()
