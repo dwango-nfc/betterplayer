@@ -42,15 +42,17 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
           'betterPlayerEventType: ${event.betterPlayerEventType}, event.parameters: ${event.parameters.toString()}');
 
       if (event.betterPlayerEventType == BetterPlayerEventType.play) {
+        final mediaQueryData = MediaQuery.of(context);
         final RenderBox box =
             _betterPlayerKey.currentContext?.findRenderObject() as RenderBox;
         final globalOffset = box.localToGlobal(Offset.zero);
         _betterPlayerController.setupAutomaticPictureInPictureTransition(
-            willStartPIP: true,
-            left: globalOffset.dx,
-            top: globalOffset.dy,
-            right: box.size.width,
-            bottom: box.size.height);
+          willStartPIP: true,
+          left: globalOffset.dx * mediaQueryData.devicePixelRatio,
+          top: globalOffset.dy * mediaQueryData.devicePixelRatio,
+          right: box.size.width * mediaQueryData.devicePixelRatio,
+          bottom: box.size.height * mediaQueryData.devicePixelRatio,
+        );
         setState(() {
           _shouldStartPIP = true;
         });
