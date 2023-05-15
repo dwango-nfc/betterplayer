@@ -1054,8 +1054,13 @@ class BetterPlayerController {
 
   ///Set up to start Picture in Picture automatically when close app.
   ///When device is not supported, PiP mode won't be open.
-  Future<void>? setupAutomaticPictureInPictureTransition(
-      {required bool willStartPIP}) async {
+  Future<void>? setupAutomaticPictureInPictureTransition({
+    required bool willStartPIP,
+    double? left,
+    double? top,
+    double? right,
+    double? bottom,
+  }) async {
     if (videoPlayerController == null) {
       throw StateError("The data source has not been initialized");
     }
@@ -1066,6 +1071,10 @@ class BetterPlayerController {
     if (isPipSupported) {
       await videoPlayerController?.setupAutomaticPictureInPictureTransition(
         willStartPIP: willStartPIP,
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
       );
     } else {
       BetterPlayerUtils.log(

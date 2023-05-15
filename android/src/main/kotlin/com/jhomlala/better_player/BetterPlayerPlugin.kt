@@ -220,7 +220,13 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             }
             SETUP_AUTOMATIC_PICTURE_IN_PICTURE_TRANSITION -> {
                 val willStartPIP = call.argument<Boolean?>(WILL_START_PIP)!!
-                setupAutomaticPictureInPictureTransition(willStartPIP, player)
+                val rect = Rect(
+                    call.argument<Double>("left")!!.toInt(),
+                    call.argument<Double>("top")!!.toInt(),
+                    call.argument<Double>("right")!!.toInt(),
+                    call.argument<Double>("bottom")!!.toInt()
+                )
+                setupAutomaticPictureInPictureTransition(willStartPIP, player, rect)
                 result.success(null)
             }
             ENABLE_PICTURE_IN_PICTURE_METHOD -> {
@@ -443,13 +449,17 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             .hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
     }
 
-    private fun setupAutomaticPictureInPictureTransition(willStartPIP: Boolean, player: BetterPlayer) {
+    private fun setupAutomaticPictureInPictureTransition(
+        willStartPIP: Boolean,
+        player: BetterPlayer,
+        rect: Rect = Rect()
+    ) {
         // `setAutoEnterEnabled` only available from Build.VERSION_CODES.S(Android12)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             player.setupMediaSession(flutterState!!.applicationContext)
             val params = PictureInPictureParams.Builder()
                 .setAspectRatio(PIP_ASPECT_RATIO)
-//                .setSourceRectHint(Rect())
+                .setSourceRectHint(rect)
                 .setSeamlessResizeEnabled(true)
                 .setAutoEnterEnabled(willStartPIP)
                 .build()

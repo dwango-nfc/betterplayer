@@ -42,8 +42,15 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
           'betterPlayerEventType: ${event.betterPlayerEventType}, event.parameters: ${event.parameters.toString()}');
 
       if (event.betterPlayerEventType == BetterPlayerEventType.play) {
+        final RenderBox box =
+            _betterPlayerKey.currentContext?.findRenderObject() as RenderBox;
+        final globalOffset = box.localToGlobal(Offset.zero);
         _betterPlayerController.setupAutomaticPictureInPictureTransition(
-            willStartPIP: true);
+            willStartPIP: true,
+            left: globalOffset.dx,
+            top: globalOffset.dy,
+            right: box.size.width,
+            bottom: box.size.height);
         setState(() {
           _shouldStartPIP = true;
         });

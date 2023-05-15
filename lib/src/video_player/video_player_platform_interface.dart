@@ -141,6 +141,10 @@ abstract class VideoPlayerPlatform {
   Future<void> setupAutomaticPictureInPictureTransition({
     int? textureId,
     bool? willStartPIP,
+    double? left,
+    double? top,
+    double? right,
+    double? bottom,
   }) {
     throw UnimplementedError(
         'setupAutomaticPictureInPictureTransition() has not been implemented.');
