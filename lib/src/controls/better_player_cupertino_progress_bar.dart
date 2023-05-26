@@ -76,7 +76,7 @@ class _VideoProgressBarState
         }
         _controllerWasPlaying = controller!.value.isPlaying;
         if (_controllerWasPlaying) {
-          controller!.pause();
+          // controller!.pause();
         }
 
         if (widget.onDragStart != null) {
@@ -98,8 +98,8 @@ class _VideoProgressBarState
           return;
         }
         if (_controllerWasPlaying) {
-          betterPlayerController?.play();
-          shouldPlayAfterDragEnd = true;
+          // betterPlayerController?.play();
+          // shouldPlayAfterDragEnd = true;
         }
         _setupUpdateBlockTimer();
 
@@ -175,10 +175,10 @@ class _VideoProgressBarState
   }
 
   void onFinishedLastSeek() {
-    if (shouldPlayAfterDragEnd) {
-      shouldPlayAfterDragEnd = false;
-      betterPlayerController?.play();
-    }
+    // if (shouldPlayAfterDragEnd) {
+    //   shouldPlayAfterDragEnd = false;
+    //   betterPlayerController?.play();
+    // }
   }
 }
 

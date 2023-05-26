@@ -40,9 +40,9 @@ AVPictureInPictureController *_pipController;
     BetterPlayerView *playerView = [[BetterPlayerView alloc] initWithFrame:CGRectZero];
     playerView.player = _player;
     self._betterPlayerView = playerView;
-    if (!_pipController && self._willStartPictureInPicture) {
+//    if (!_pipController && self._willStartPictureInPicture) {
         [self setupPipController];
-    }
+//    }
     return playerView;
 }
 
@@ -409,16 +409,19 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         }
     } else if (context == playbackLikelyToKeepUpContext) {
         if ([[_player currentItem] isPlaybackLikelyToKeepUp]) {
+            NSLog(@"playbackLikelyToKeepUpContext - bufferingEnd");
             [self updatePlayingState];
             if (_eventSink != nil) {
                 _eventSink(@{@"event" : @"bufferingEnd", @"key" : _key});
             }
         }
     } else if (context == playbackBufferEmptyContext) {
+        NSLog(@"playbackBufferEmptyContext - bufferingStart");
         if (_eventSink != nil) {
             _eventSink(@{@"event" : @"bufferingStart", @"key" : _key});
         }
     } else if (context == playbackBufferFullContext) {
+        NSLog(@"playbackBufferFullContext - bufferingEnd");
         if (_eventSink != nil) {
             _eventSink(@{@"event" : @"bufferingEnd", @"key" : _key});
         }
@@ -434,6 +437,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     }
 
     if (_isPlaying) {
+        NSLog(@"updatePlayingState play");
         if (@available(iOS 10.0, *)) {
             [_player playImmediatelyAtRate:1.0];
             _player.rate = _playerRate;
@@ -442,6 +446,8 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
             _player.rate = _playerRate;
         }
     } else {
+        // pause
+        NSLog(@"updatePlayingState pause");
         [_player pause];
     }
 }
@@ -540,7 +546,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     ///When player is playing, pause video, seek to new position and start again. This will prevent issues with seekbar jumps.
     bool wasPlaying = _isPlaying;
     if (wasPlaying){
-        [_player pause];
+//        [_player pause];
     }
 
     [_player seekToTime:CMTimeMake(location, 1000)
@@ -694,13 +700,25 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)willStartPictureInPicture: (bool) willStart
 {
     self._willStartPictureInPicture = willStart;
-    if (willStart) {
-        if(!_pipController) {
-            [self preparePictureInPicture:CGRectZero];
-        }
-    } else {
-        _pipController = nil;
+    _pipController = nil;
+//    [self preparePictureInPicture:CGRectZero];
+    
+    if(!_pipController) {
+        [self setupPipController];
     }
+    
+//    if (@available(iOS 14.2, *)) {
+//        _pipController.canStartPictureInPictureAutomaticallyFromInline = self._willStartPictureInPicture;
+//    }
+    
+    
+//    if (willStart) {
+//        if(!_pipController) {
+//            [self preparePictureInPicture:CGRectZero];
+//        }
+//    } else {
+//        _pipController = nil;
+//    }
 }
 
 - (void)disablePictureInPicture
@@ -721,7 +739,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 
 #if TARGET_OS_IOS
 - (void)pictureInPictureControllerDidStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
-    [self disablePictureInPicture];
+//    [self disablePictureInPicture];
 }
 
 - (void)pictureInPictureControllerDidStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){

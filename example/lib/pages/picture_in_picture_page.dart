@@ -38,8 +38,8 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
         return;
       }
 
-      debugPrint(
-          'betterPlayerEventType: ${event.betterPlayerEventType}, event.parameters: ${event.parameters.toString()}');
+      // debugPrint(
+      //     'betterPlayerEventType: ${event.betterPlayerEventType}, event.parameters: ${event.parameters.toString()}');
 
       if (event.betterPlayerEventType == BetterPlayerEventType.play) {
         _betterPlayerController.setupAutomaticPictureInPictureTransition(
@@ -48,11 +48,11 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
           _shouldStartPIP = true;
         });
       } else if (event.betterPlayerEventType == BetterPlayerEventType.pause) {
-        _betterPlayerController.setupAutomaticPictureInPictureTransition(
-            willStartPIP: false);
-        setState(() {
-          _shouldStartPIP = false;
-        });
+        // _betterPlayerController.setupAutomaticPictureInPictureTransition(
+        //     willStartPIP: false);
+        // setState(() {
+        //   _shouldStartPIP = false;
+        // });
       } else if (event.betterPlayerEventType ==
           BetterPlayerEventType.enteringPIP) {
         _betterPlayerController.setControlsEnabled(false);
@@ -122,6 +122,12 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
             child: Text("Disable PiP"),
             onPressed: () async {
               _betterPlayerController.disablePictureInPicture();
+            },
+          ),
+          ElevatedButton(
+            child: Text("Seek to"),
+            onPressed: () async {
+              _betterPlayerController.seekTo(const Duration(minutes: 4, seconds: 5));
             },
           ),
           // Button for testing.
