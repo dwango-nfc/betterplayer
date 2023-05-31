@@ -148,9 +148,8 @@ bool _remoteCommandsInitialized = false;
     [commandCenter.playCommand addTargetWithHandler: ^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
         if (_notificationPlayer != [NSNull null]){
             _notificationPlayer.eventSink(@{@"event" : @"play"});
-
             return MPRemoteCommandHandlerStatusSuccess;
-        }else{
+        } else {
             return MPRemoteCommandHandlerStatusCommandFailed;
         }
     }];
@@ -158,9 +157,8 @@ bool _remoteCommandsInitialized = false;
     [commandCenter.pauseCommand addTargetWithHandler: ^MPRemoteCommandHandlerStatus(MPRemoteCommandEvent * _Nonnull event) {
         if (_notificationPlayer != [NSNull null]){
             _notificationPlayer.eventSink(@{@"event" : @"pause"});
-
             return MPRemoteCommandHandlerStatusSuccess;
-        }else{
+        } else {
             return MPRemoteCommandHandlerStatusCommandFailed;
         }
     }];
