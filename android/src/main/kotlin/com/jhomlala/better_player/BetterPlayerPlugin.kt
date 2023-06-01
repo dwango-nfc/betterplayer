@@ -131,6 +131,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             if (intent == null || intent.action != DW_NFC_BETTER_PLAYER_CUSTOM_PIP_ACTION) {
                 return
             }
+            Log.d("NFCDEV", "Broadcast onReceive intent.action: " + intent.action)
             when (intent.getIntExtra(EXTRA_ACTION_TYPE, 0)) {
                 PipActions.PLAY.rawValue -> {
                     playerForPictureInPicture?.tapPlayButtonInPIP()
@@ -208,6 +209,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
             result.error("no_activity", "better_player plugin requires a foreground activity", null)
             return
         }
+        Log.d("NFCDEV", "onMethodCall call.method: " + call.method)
         when (call.method) {
             INIT_METHOD -> disposeAllPlayers()
             CREATE_METHOD -> {
