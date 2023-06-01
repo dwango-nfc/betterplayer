@@ -92,6 +92,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
         setLifeCycleObserverForPictureInPicture(binding)
+        Log.d(TAG, "NFCDEV onAttachedToActivity")
     }
 
     override fun onDetachedFromActivityForConfigChanges() {}
@@ -100,7 +101,9 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         setLifeCycleObserverForPictureInPicture(binding)
     }
 
-    override fun onDetachedFromActivity() {}
+    override fun onDetachedFromActivity() {
+        Log.d(TAG, "NFCDEV onDetachedFromActivity")
+    }
 
     private fun setLifeCycleObserverForPictureInPicture(binding: ActivityPluginBinding) {
         val lifecycle = FlutterLifecycleAdapter.getActivityLifecycle(binding)
@@ -229,6 +232,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                     customDefaultLoadControl, result, playerEventListenerForIsPlayingChanged
                 )
                 videoPlayers.put(handle.id(), player)
+                Log.d("NFCDEV", "register broadcastReceiverForPIPAction")
                 this.activity?.registerReceiver(
                     broadcastReceiverForPIPAction,
                     IntentFilter(DW_NFC_BETTER_PLAYER_CUSTOM_PIP_ACTION)
@@ -598,6 +602,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         videoPlayers.remove(textureId)
         dataSources.remove(textureId)
         setupAutomaticPictureInPictureTransition(false, player)
+        Log.d("NFCDEV", "unregisterReceiver broadcastReceiverForPIPAction")
         this.activity?.unregisterReceiver(broadcastReceiverForPIPAction)
         stopPipHandler()
     }
@@ -709,8 +714,10 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private val PIP_ASPECT_RATIO = Rational(16, 9)
 
         /** For custom action in PIP mode  */
-        private const val DW_NFC_BETTER_PLAYER_CUSTOM_PIP_ACTION = "better_player.nfc_ch_app/pip_custom_action"
+        private const val DW_NFC_BETTER_PLAYER_CUSTOM_PIP_ACTION =
+            "better_player.nfc_ch_app/pip_custom_action"
         private const val EXTRA_ACTION_TYPE = "extra_action_type"
+
         private enum class PipActions(val rawValue: Int) {
             PLAY(1),
             PAUSE(2)
