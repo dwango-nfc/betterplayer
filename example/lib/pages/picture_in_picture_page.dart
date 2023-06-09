@@ -21,6 +21,12 @@ class _PictureInPicturePageState extends State<PictureInPicturePage> {
     BetterPlayerDataSource dataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       Constants.elephantDreamVideoUrl,
+      notificationConfiguration: BetterPlayerNotificationConfiguration(
+        showNotification: true,
+        title: "Elephant dream",
+        author: "Some author",
+        imageUrl: Constants.catImageUrl,
+      ),
     );
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.setupDataSource(dataSource);

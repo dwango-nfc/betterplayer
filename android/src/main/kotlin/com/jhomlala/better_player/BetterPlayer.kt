@@ -321,25 +321,25 @@ internal class BetterPlayer(
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            refreshHandler = Handler(Looper.getMainLooper())
-            refreshRunnable = Runnable {
-                val playbackState: PlaybackStateCompat = if (exoPlayer?.isPlaying == true) {
-                    PlaybackStateCompat.Builder()
-                        .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
-                        .setState(PlaybackStateCompat.STATE_PLAYING, position, 1.0f)
-                        .build()
-                } else {
-                    PlaybackStateCompat.Builder()
-                        .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
-                        .setState(PlaybackStateCompat.STATE_PAUSED, position, 1.0f)
-                        .build()
-                }
-                mediaSession?.setPlaybackState(playbackState)
-                refreshHandler?.postDelayed(refreshRunnable!!, 1000)
-            }
-            refreshHandler?.postDelayed(refreshRunnable!!, 0)
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            refreshHandler = Handler(Looper.getMainLooper())
+//            refreshRunnable = Runnable {
+//                val playbackState: PlaybackStateCompat = if (exoPlayer?.isPlaying == true) {
+//                    PlaybackStateCompat.Builder()
+//                        .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+//                        .setState(PlaybackStateCompat.STATE_PLAYING, position, 1.0f)
+//                        .build()
+//                } else {
+//                    PlaybackStateCompat.Builder()
+//                        .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+//                        .setState(PlaybackStateCompat.STATE_PAUSED, position, 1.0f)
+//                        .build()
+//                }
+//                mediaSession?.setPlaybackState(playbackState)
+//                refreshHandler?.postDelayed(refreshRunnable!!, 1000)
+//            }
+//            refreshHandler?.postDelayed(refreshRunnable!!, 0)
+//        }
         exoPlayerEventListener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 mediaSession?.setMetadata(
