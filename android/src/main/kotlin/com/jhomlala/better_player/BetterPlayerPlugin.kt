@@ -321,7 +321,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         textureId: Long,
         player: BetterPlayer
     ) {
-        Log.d("NFCDEV", "onMethodCall call.method: " + call.method)
+//        Log.d("NFCDEV", "onMethodCall call.method: " + call.method)
         when (call.method) {
             SET_DATA_SOURCE_METHOD -> {
                 setDataSource(call, result, player)
