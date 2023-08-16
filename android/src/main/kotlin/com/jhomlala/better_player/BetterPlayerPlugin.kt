@@ -321,6 +321,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         textureId: Long,
         player: BetterPlayer
     ) {
+        Log.d("NFCDEV", "onMethodCall call.method: " + call.method)
         when (call.method) {
             SET_DATA_SOURCE_METHOD -> {
                 setDataSource(call, result, player)
@@ -683,6 +684,8 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     }
 
     private fun dispose(player: BetterPlayer, textureId: Long) {
+        // 番組変えた時は、ここにこない？
+        Log.d("NFCDEV", "BetterPlayerPlugin dispose" + textureId.toString())
         currentPlayer = null
         _notificationParameter.value = null
         player.dispose()
