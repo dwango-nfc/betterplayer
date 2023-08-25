@@ -464,6 +464,7 @@ internal class BetterPlayer(
                         sendBufferingUpdate(true)
                         val event: MutableMap<String, Any> = HashMap()
                         event["event"] = "bufferingStart"
+                        event["duration"] = getDuration() // ここでdurationを取得している
                         eventSink.success(event)
                     }
                     Player.STATE_READY -> {
@@ -473,6 +474,7 @@ internal class BetterPlayer(
                         }
                         val event: MutableMap<String, Any> = HashMap()
                         event["event"] = "bufferingEnd"
+                        event["duration"] = getDuration() // ここでdurationを取得している
                         eventSink.success(event)
                     }
                     Player.STATE_ENDED -> {
@@ -605,7 +607,7 @@ internal class BetterPlayer(
             val event: MutableMap<String, Any?> = HashMap()
             event["event"] = "initialized"
             event["key"] = key
-            event["duration"] = getDuration()
+            event["duration"] = getDuration() // ここでdurationを取得している
             if (exoPlayer?.videoFormat != null) {
                 val videoFormat = exoPlayer.videoFormat
                 var width = videoFormat?.width
