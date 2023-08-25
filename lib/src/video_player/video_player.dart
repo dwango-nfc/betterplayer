@@ -213,6 +213,10 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
         return;
       }
       videoEventStreamController.add(event);
+      debugPrint('VideoEventType: ${event.eventType}, duration: ${event.duration}');
+      if ((event.duration ?? Duration.zero) > Duration.zero) {
+        debugPrint('◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎◼︎ VideoEventType: ${event.eventType}, duration: ${event.duration}');
+      }
       switch (event.eventType) {
         case VideoEventType.initialized:
           value = value.copyWith(
