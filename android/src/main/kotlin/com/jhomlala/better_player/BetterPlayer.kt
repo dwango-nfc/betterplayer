@@ -459,7 +459,7 @@ internal class BetterPlayer(
         setAudioAttributes(exoPlayer, true)
         exoPlayer?.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
-                Log.d("NFCDEV", "duration: " + getDuration().toString())
+                Log.d("NFCDEV",  "event: " + playbackState.toString() + "duration: " + getDuration().toString())
                 when (playbackState) {
                     Player.STATE_BUFFERING -> {
                         sendBufferingUpdate(true)
@@ -475,7 +475,7 @@ internal class BetterPlayer(
                         }
                         val event: MutableMap<String, Any> = HashMap()
                         event["event"] = "bufferingEnd"
-                        event["duration"] = getDuration() // ここでdurationを取得している
+                        event["duration"] = 2345 // ここでdurationを取得している
                         eventSink.success(event)
                     }
                     Player.STATE_ENDED -> {
