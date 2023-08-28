@@ -475,7 +475,7 @@ internal class BetterPlayer(
                         }
                         val event: MutableMap<String, Any> = HashMap()
                         event["event"] = "bufferingEnd"
-                        event["duration"] = 2345 // ここでdurationを取得している
+                        event["duration"] = 2345 // ここで設定した値はflutter 側に伝わらない？
                         eventSink.success(event)
                     }
                     Player.STATE_ENDED -> {
@@ -608,7 +608,8 @@ internal class BetterPlayer(
             val event: MutableMap<String, Any?> = HashMap()
             event["event"] = "initialized"
             event["key"] = key
-            event["duration"] = getDuration() // ここでdurationを取得している
+//            event["duration"] = getDuration() // ここでdurationを取得している
+            event["duration"] = 12345 // ここでdurationを取得している
             if (exoPlayer?.videoFormat != null) {
                 val videoFormat = exoPlayer.videoFormat
                 var width = videoFormat?.width
