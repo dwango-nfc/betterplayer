@@ -519,7 +519,7 @@ bool _isCommandCenterButtonsEnabled = true;
             int height = [argsMap[@"height"] intValue];
             int bitrate = [argsMap[@"bitrate"] intValue];
 
-            [player setTrackParameters:width height: height bitrate: bitrate];
+            [player setTrackParameters:width:width height: height bitrate: bitrate];
             result(nil);
         } else if ([@"setupAutomaticPictureInPictureTransition" isEqualToString:call.method]){
             [player willStartPictureInPicture:[argsMap[@"willStartPIP"] boolValue]];
