@@ -41,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic) UIView* blackCoverView;
 @property(nonatomic) UIImageView* limitedPlanCoverView;
 @property(nonatomic) UIView* limitedBlackCoverView;
+@property(nonatomic) UIView* pipPlayerPlaceholderView;
 @property(nonatomic) bool isPremiumBannerDisplay;
 @property(nonatomic) bool isPipMode;
 @property(nonatomic) id timeObserverId;

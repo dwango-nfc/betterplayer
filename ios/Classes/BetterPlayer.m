@@ -26,6 +26,7 @@ int _seekPosition;
     [self initBlackCoverView];
     [self initLimitedPlanCoverView];
     [self initLimitedBlackCoverView];
+    [self initPIPPlayerPlaceholderView];
     NSAssert(self, @"super init cannot be nil");
     _isInitialized = false;
     _isPlaying = false;
@@ -44,6 +45,15 @@ int _seekPosition;
     BetterPlayerView *playerView = [[BetterPlayerView alloc] initWithFrame:CGRectZero];
     playerView.player = _player;
     self._betterPlayerView = playerView;
+
+    if (_pipController) {
+        AVPlayerLayer *playerLayer = playerView.playerLayer;
+        if (playerLayer) {
+            _pipController.contentSource = [[AVPictureInPictureControllerContentSource alloc] initWithPlayerLayer:playerLayer];
+            _pipController.canStartPictureInPictureAutomaticallyFromInline = false;
+        }
+    }
+
     return playerView;
 }
 
@@ -702,7 +712,8 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
         AVPlayerLayer *playerLayer = self._betterPlayerView.playerLayer;
         if (!_pipController && playerLayer && [AVPictureInPictureController isPictureInPictureSupported]) {
-            _pipController = [[AVPictureInPictureController alloc] initWithPlayerLayer: playerLayer];
+            AVPictureInPictureControllerContentSource *contentSource = [[AVPictureInPictureControllerContentSource alloc] initWithPlayerLayer:playerLayer];
+            _pipController = [[AVPictureInPictureController alloc] initWithContentSource: contentSource];
             if (@available(iOS 14.2, *)) {
                 _pipController.canStartPictureInPictureAutomaticallyFromInline = true;
             }
@@ -745,8 +756,11 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)willStartPictureInPicture: (bool) willStart
 {
     self._willStartPictureInPicture = willStart;
-    _pipController = nil;
-    
+    if (_pipController) {
+        _pipController.canStartPictureInPictureAutomaticallyFromInline = willStart;
+        return;
+    }
+
     if (willStart) {
         // "0.2 seconds" is a magic number. But it is the same as the library's code. https://github.com/jhomlala/betterplayer/blob/f6a77cf6fbb515f01aa9fb459b2ee739de3e724c/ios/Classes/BetterPlayer.m#L647
         // It is waiting to release the previous _pipController.
@@ -777,9 +791,11 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 #if TARGET_OS_IOS
 - (void)pictureInPictureControllerDidStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
     [self disablePictureInPicture];
+    [self hidePIPPlayerPlaceholderView];
 }
 
 - (void)pictureInPictureControllerDidStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
+    [self showPIPPlayerPlaceholderView];
     if (_eventSink != nil) {
         _eventSink(@{@"event" : @"pipStart"});
     }
@@ -789,7 +805,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     [self setIsPipMode:false];
     [self hideBlackCoverView];
     [self hideLimitedPlanCoverAfterPipCompletelyGone];
-    
+
     bool wasPlaying = _isPlaying;
     if (_eventSink != nil) {
         _eventSink(@{@"event" : @"exitingPIP",
@@ -864,18 +880,50 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     ]];
 }
 
+- (void) hideLimitedBlackCoverView {
+    if (_limitedBlackCoverView) {
+        [_limitedBlackCoverView removeFromSuperview];
+    }
+}
+
+- (void) initPIPPlayerPlaceholderView {
+    _pipPlayerPlaceholderView = NULL;
+    _pipPlayerPlaceholderView = [[UIView alloc] init];
+    _pipPlayerPlaceholderView.translatesAutoresizingMaskIntoConstraints = false;
+    _pipPlayerPlaceholderView.backgroundColor = [UIColor blackColor];
+}
+
+- (void) showPIPPlayerPlaceholderView {
+    if (self._betterPlayerView == nil) {
+        return;
+    }
+    UIView *betterPlayerSuperview = self._betterPlayerView.superview;
+
+    [betterPlayerSuperview addSubview:_pipPlayerPlaceholderView];
+    if ([self hasCommonConstraintsBetweenTwoViews:betterPlayerSuperview andView2:_pipPlayerPlaceholderView]) {
+        return;
+    }
+
+    [NSLayoutConstraint activateConstraints:@[
+        [_pipPlayerPlaceholderView.topAnchor constraintEqualToAnchor:betterPlayerSuperview.topAnchor],
+        [_pipPlayerPlaceholderView.bottomAnchor constraintEqualToAnchor:betterPlayerSuperview.bottomAnchor],
+        [_pipPlayerPlaceholderView.leadingAnchor constraintEqualToAnchor:betterPlayerSuperview.leadingAnchor],
+        [_pipPlayerPlaceholderView.trailingAnchor constraintEqualToAnchor:betterPlayerSuperview.trailingAnchor],
+    ]];
+}
+
+- (void) hidePIPPlayerPlaceholderView {
+    if (_pipPlayerPlaceholderView) {
+        [_pipPlayerPlaceholderView removeFromSuperview];
+    }
+}
+
 - (BOOL)hasCommonConstraintsBetweenTwoViews:(UIView *)view1 andView2:(UIView *)view2 {
     NSArray *commonConstraints = [view1.constraints filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSLayoutConstraint *constraint, NSDictionary *bindings) {
         return [constraint.firstItem isEqual:view2] || [constraint.secondItem isEqual:view2];
     }]];
 
     return commonConstraints.count > 0;
-}
-
-- (void) hideLimitedBlackCoverView {
-    if (_limitedBlackCoverView) {
-        [_limitedBlackCoverView removeFromSuperview];
-    }
 }
 
 - (void)setIsPremiumBannerDisplay:(BOOL) isDisplay {
