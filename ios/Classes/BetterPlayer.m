@@ -636,12 +636,13 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 
 - (void)setSpeed:(double)speed result:(FlutterResult)result {
     _playerRate = speed;
-    if (_isPlaying){
-        _player.rate = _playerRate;
-    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (_isPlaying){
+            _player.rate = _playerRate;
+        }
+    });
     result(nil);
 }
-
 
 - (void)setTrackParameters:(int) width: (int) height: (int)bitrate {
     _player.currentItem.preferredPeakBitRate = bitrate;
