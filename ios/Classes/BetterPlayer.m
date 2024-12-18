@@ -637,8 +637,8 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)setSpeed:(double)speed result:(FlutterResult)result {
     _playerRate = speed;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (_isPlaying){
-            _player.rate = _playerRate;
+        if (self->_isPlaying){
+            self->_player.rate = self->_playerRate;
         }
     });
     result(nil);
