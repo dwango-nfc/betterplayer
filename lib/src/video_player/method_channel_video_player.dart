@@ -551,4 +551,14 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
       Duration(milliseconds: pair[1] as int),
     );
   }
+
+  @override
+  Future<void> turnOffPipAndControlCenter(int? textureId) {
+    return _channel.invokeMethod<void>(
+      'turnOffPipAndControlCenter',
+      <String, dynamic>{
+        'textureId': textureId,
+      },
+    );
+  }
 }

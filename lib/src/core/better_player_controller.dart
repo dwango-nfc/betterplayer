@@ -1413,4 +1413,8 @@ class BetterPlayerController {
       _tempFiles.forEach((file) => file.delete());
     }
   }
+
+  void turnOffPipAndControlCenter() {
+    videoPlayerController!.turnOffPipAndControlCenter();
+  }
 }
