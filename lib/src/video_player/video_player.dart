@@ -681,8 +681,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     _videoPlayerPlatform.setIsPlayerVideoVisible(_textureId, isVisible);
   }
 
-  void turnOffPipAndControlCenter() {
-    _videoPlayerPlatform.turnOffPipAndControlCenter(_textureId);
+  Future<void> turnOffPipAndControlCenter() async {
+    await _videoPlayerPlatform.turnOffPipAndControlCenter(_textureId);
   }
 
   static Future clearCache() async {
