@@ -196,9 +196,9 @@ abstract class VideoPlayerPlatform {
         'setIsPlayerVideoVisible() has not been implemented.');
   }
 
-  Future<void> turnOffPipAndControlCenter(int? textureId) {
+  Future<void> hidePipAndControlCenterButton(int? textureId) {
     throw UnimplementedError(
-        'turnOffPipAndControlCenter() has not been implemented.');
+        'hidePipAndControlCenterButton() has not been implemented.');
   }
 
   /// Returns a widget displaying the video with a given textureID.

@@ -439,8 +439,10 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
                 result.success(null)
             }
 
-            TURN_OFF_PIP_AND_CONTROL_CENTER -> {
+            HIDE_PIP_AND_CONTROL_CENTER_BUTTON -> {
+                removeExternalPlayButton()
                 _notificationParameter.value = null
+                result.success(null)
             }
 
             else -> result.notImplemented()
@@ -898,7 +900,7 @@ class BetterPlayerPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
         private const val DISPOSE_METHOD = "dispose"
         private const val PRE_CACHE_METHOD = "preCache"
         private const val STOP_PRE_CACHE_METHOD = "stopPreCache"
-        private const val TURN_OFF_PIP_AND_CONTROL_CENTER ="turnOffPipAndControlCenter"
+        private const val HIDE_PIP_AND_CONTROL_CENTER_BUTTON ="hidePipAndControlCenterButton"
         private val PIP_ASPECT_RATIO = Rational(16, 9)
         const val IS_LIVE_STREAM = "isLiveStream"
 

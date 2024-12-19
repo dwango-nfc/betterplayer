@@ -553,9 +553,9 @@ class MethodChannelVideoPlayer extends VideoPlayerPlatform {
   }
 
   @override
-  Future<void> turnOffPipAndControlCenter(int? textureId) {
+  Future<void> hidePipAndControlCenterButton(int? textureId) {
     return _channel.invokeMethod<void>(
-      'turnOffPipAndControlCenter',
+      'hidePipAndControlCenterButton',
       <String, dynamic>{
         'textureId': textureId,
       },

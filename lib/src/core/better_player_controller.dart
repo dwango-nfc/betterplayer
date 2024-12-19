@@ -1414,7 +1414,7 @@ class BetterPlayerController {
     }
   }
 
-  Future<void> turnOffPipAndControlCenter() async {
-    await videoPlayerController?.turnOffPipAndControlCenter();
+  Future<void> hidePipAndControlCenterButton() async {
+    await videoPlayerController?.hidePipAndControlCenterButton();
   }
 }
