@@ -337,7 +337,6 @@ bool _isCommandCenterButtonsEnabled = true;
     [ _timeObserverIdDict setObject:_timeObserverId forKey: key];
 }
 
-
 - (void) disposeNotificationData: (BetterPlayer*)player{
     if (player == _notificationPlayer){
         _notificationPlayer = NULL;
@@ -627,6 +626,9 @@ bool _isCommandCenterButtonsEnabled = true;
                     [player showPlayerCoverView];
                 }
             }
+        } else if([@"hidePipAndControlCenterButton" isEqualToString:call.method]) {
+            [self itemDidPlayToEndTime:nil];
+            result(nil);
         } else {
             result(FlutterMethodNotImplemented);
         }
