@@ -627,6 +627,20 @@ bool _isCommandCenterButtonsEnabled = true;
                 }
             }
         } else if([@"hidePipAndControlCenterButton" isEqualToString:call.method]) {
+            NSDictionary* dataSource = [_dataSourceDict objectForKey:[self getTextureId:player]];
+            NSMutableDictionary *mutableDataSource = [dataSource mutableCopy];
+            [mutableDataSource setObject:@(false) forKey:@"showNotification"];
+            _dataSourceDict[[self getTextureId:player]] = mutableDataSource;
+
+            if (!player.isPipMode) {
+                [player resetPipController];
+            } else {
+                [_notificationPlayer setIsDisplayPipButtons:false];
+            }
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            [self disposeNotificationData:player];
+            [self removeCommandCenterTargetHandlers];
+            [self setRemoteCommandsNotificationNotActive];
             [self itemDidPlayToEndTime:nil];
             result(nil);
         } else {
