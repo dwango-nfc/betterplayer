@@ -803,13 +803,13 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
     [self setIsPipMode:true];
 
+    if (_isPlayerCoverDisplaying) {
+        [self showPlayerCoverViewInPIP];
+    }
     if (_isPremiumBannerDisplay) {
         [self showLimitedPlanCoverViewInPIP];
     } else {
         [self hideLimitedPlanCoverViewInPIP];
-    }
-    if (_isPlayerCoverDisplaying) {
-        [self showPlayerCoverViewInPIP];
     }
     
     // When change to PIP mode, need to correct control status
