@@ -640,8 +640,7 @@ bool _isCommandCenterButtonsEnabled = true;
             [[NSNotificationCenter defaultCenter] removeObserver:self];
             [self disposeNotificationData:player];
             [self removeCommandCenterTargetHandlers];
-            [self setRemoteCommandsNotificationNotActive];
-            [self itemDidPlayToEndTime:nil];
+            [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
             result(nil);
         } else {
             result(FlutterMethodNotImplemented);
