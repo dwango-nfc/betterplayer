@@ -491,10 +491,10 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
         }
         if (@available(iOS 10.0, *)) {
             [_player playImmediatelyAtRate:1.0];
-            _player.rate = _playerRate;
+            [self setManualSpeed: _playerRate];
         } else {
             [_player play];
-            _player.rate = _playerRate;
+            [self setManualSpeed: _playerRate];
         }
     } else {
         [_player pause];
@@ -603,7 +603,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     if (wasPlaying){
         if (self._willStartPictureInPicture) {
             // PIP doesn't work if player pauses, so when seeking we make the player play but with minimum speed
-            _player.rate = 0.1;
+            [self setManualSpeed: 0.1];
         } else {
             [_player pause];
         }
@@ -620,7 +620,7 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
             _seekPosition = -1;
             
             if (wasPlaying) {
-                _player.rate = _playerRate;
+                [self setManualSpeed: _playerRate];
             }
         }
     }];
@@ -637,11 +637,25 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)setSpeed:(double)speed result:(FlutterResult)result {
     _playerRate = speed;
     if (_isPlaying){
-        _player.rate = _playerRate;
+        [self setManualSpeed: _playerRate];
     }
     result(nil);
 }
 
+- (void)setManualSpeed:(double)speed {
+#if TARGET_OS_SIMULATOR
+    // This is a workaround
+    // In the simulator, if setSpeed is not equal to 1, seeking the player will cause the player to freeze.
+    _player.rate = 1;
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)),
+                   dispatch_get_main_queue(), ^{
+        self->_player.rate = speed;
+    });
+#else
+    _player.rate = speed;
+#endif
+}
 
 - (void)setTrackParameters:(int) width: (int) height: (int)bitrate {
     _player.currentItem.preferredPeakBitRate = bitrate;
