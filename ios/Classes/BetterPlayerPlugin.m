@@ -632,10 +632,10 @@ bool _isCommandCenterButtonsEnabled = true;
             [mutableDataSource setObject:@(false) forKey:@"showNotification"];
             _dataSourceDict[[self getTextureId:player]] = mutableDataSource;
 
-            if (!player.isPipMode) {
-                [player resetPipController];
-            } else {
+            if (player.isPipMode) {
                 [_notificationPlayer setIsDisplayPipButtons:false];
+            } else {
+                [player resetPipController];
             }
             [[NSNotificationCenter defaultCenter] removeObserver:self];
             [self disposeNotificationData:player];
