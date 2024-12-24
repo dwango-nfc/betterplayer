@@ -1097,13 +1097,13 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     }
 }
 
-/// Check when the PIP is completely gone.
+/// Do action after the PIP is completely gone.
 ///
 /// - if _isPipMode == true and isPictureInPictureActive is whatever (still in PIP mode)
 ///     - All the check is false, finish this function without any actions.
 ///     - The pictureInPictureControllerWillStartPictureInPicture logics already handled when re-entering PIP and while in PIP mode.
 /// - if _isPipMode == false and isPictureInPictureActive == true (while exiting PIP, and not completed yet)
-///     - Call the loop and re-checking after 0.1 seconds.
+///     - Call the loop and re-checking after 0.05 seconds.
 /// - if _isPipMode == false and isPictureInPictureActive == false (the PIP is completely gone)
 ///     - Do callback actions.
 - (void)checkWhenPipCompletelyGoneAndDoAction: (void (^)(void))action {
