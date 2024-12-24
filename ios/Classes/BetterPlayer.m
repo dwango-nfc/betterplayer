@@ -21,6 +21,8 @@ int _seekPosition;
 #endif
 
 @implementation BetterPlayer
+bool _isPlayerCoverDisplaying = false;
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super init];
     [self initBlackCoverView];
@@ -795,7 +797,13 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)pictureInPictureControllerWillStopPictureInPicture:(AVPictureInPictureController *)pictureInPictureController  API_AVAILABLE(ios(9.0)){
     [self setIsPipMode:false];
     [self hideBlackCoverView];
-    [self hideLimitedPlanCoverAfterPipCompletelyGone];
+    [self checkWhenPipCompletelyGoneAndDoAction: ^() {
+        [self hideLimitedPlanCoverViewInPIP];
+        if (_isPlayerCoverDisplaying) {
+            // This method will move _playerCoverView from UIWindow to _betterPlayerView.superview.
+            [self showPlayerCoverView];
+        }
+    }];
 
     bool wasPlaying = _isPlaying;
     if (_eventSink != nil) {
@@ -809,6 +817,9 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 - (void)pictureInPictureControllerWillStartPictureInPicture:(AVPictureInPictureController *)pictureInPictureController {
     [self setIsPipMode:true];
 
+    if (_isPlayerCoverDisplaying) {
+        [self showPlayerCoverViewInPIP];
+    }
     if (_isPremiumBannerDisplay) {
         [self showLimitedPlanCoverViewInPIP];
     } else {
@@ -1023,28 +1034,48 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
 }
 
 - (void) showPlayerCoverView {
-    if (self._betterPlayerView == nil) {
+    UIView *betterPlayerSuperview = self._betterPlayerView.superview;
+    if (betterPlayerSuperview == nil) {
         return;
     }
 
-    [self._betterPlayerView addSubview:_playerCoverView];
+    [betterPlayerSuperview addSubview:_playerCoverView];
     
-    if ([self hasCommonConstraintsBetweenTwoViews:self._betterPlayerView andView2:_playerCoverView]) {
+    if ([self hasCommonConstraintsBetweenTwoViews:betterPlayerSuperview andView2:_playerCoverView]) {
         return;
     }
 
     [NSLayoutConstraint activateConstraints:@[
-        [_playerCoverView.topAnchor constraintEqualToAnchor:self._betterPlayerView.topAnchor],
-        [_playerCoverView.bottomAnchor constraintEqualToAnchor:self._betterPlayerView.bottomAnchor],
-        [_playerCoverView.leadingAnchor constraintEqualToAnchor:self._betterPlayerView.leadingAnchor],
-        [_playerCoverView.trailingAnchor constraintEqualToAnchor:self._betterPlayerView.trailingAnchor],
+        [_playerCoverView.topAnchor constraintEqualToAnchor:betterPlayerSuperview.topAnchor],
+        [_playerCoverView.bottomAnchor constraintEqualToAnchor:betterPlayerSuperview.bottomAnchor],
+        [_playerCoverView.leadingAnchor constraintEqualToAnchor:betterPlayerSuperview.leadingAnchor],
+        [_playerCoverView.trailingAnchor constraintEqualToAnchor:betterPlayerSuperview.trailingAnchor],
     ]];
+    _isPlayerCoverDisplaying = true;
 }
+
+/// This method will move _playerCoverView from _betterPlayerView.superview to UIWindow.
+- (void) showPlayerCoverViewInPIP {
+    UIWindow *window = [UIApplication sharedApplication].windows.firstObject;
+    if (window && _isPipMode) {
+        [window addSubview:_playerCoverView];
+        
+        if ([self hasCommonConstraintsBetweenTwoViews:window andView2:_playerCoverView]) {
+            return;
+        }
+        [NSLayoutConstraint activateConstraints:@[
+            [_playerCoverView.topAnchor constraintEqualToAnchor:window.topAnchor],
+            [_playerCoverView.bottomAnchor constraintEqualToAnchor:window.bottomAnchor],
+            [_playerCoverView.leadingAnchor constraintEqualToAnchor:window.leadingAnchor],
+            [_playerCoverView.trailingAnchor constraintEqualToAnchor:window.trailingAnchor],
+        ]];
+    }}
 
 - (void) hidePlayerCoverView {
     if (_playerCoverView) {
         [_playerCoverView removeFromSuperview];
     }
+    _isPlayerCoverDisplaying = false;
 }
 
 - (void) initLimitedPlanCoverView {
@@ -1080,26 +1111,26 @@ static inline CGFloat radiansToDegrees(CGFloat radians) {
     }
 }
 
-/// Hide LimitedPlanCoverView after the PIP is completely gone.
+/// Do action after the PIP is completely gone.
 ///
 /// - if _isPipMode == true and isPictureInPictureActive is whatever (still in PIP mode)
 ///     - All the check is false, finish this function without any actions.
-///     - The showLimitedPlanCoverView logics already handled when re-entering PIP and while in PIP mode.
+///     - The pictureInPictureControllerWillStartPictureInPicture logics already handled when re-entering PIP and while in PIP mode.
 /// - if _isPipMode == false and isPictureInPictureActive == true (while exiting PIP, and not completed yet)
-///     - Call the loop and re-checking after 0.1 seconds.
+///     - Call the loop and re-checking after 0.05 seconds.
 /// - if _isPipMode == false and isPictureInPictureActive == false (the PIP is completely gone)
-///     - Hide LimitedPlanCoverView.
-- (void)hideLimitedPlanCoverAfterPipCompletelyGone {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+///     - Do callback actions.
+- (void)checkWhenPipCompletelyGoneAndDoAction: (void (^)(void))action {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if (_isPipMode) {
             return;
         }
         if ([_pipController isPictureInPictureActive]) {
-            [self hideLimitedPlanCoverAfterPipCompletelyGone];
+            [self checkWhenPipCompletelyGoneAndDoAction:action];
             return;
         }
         
-        [self hideLimitedPlanCoverViewInPIP];
+        action();
     });
 }
 
