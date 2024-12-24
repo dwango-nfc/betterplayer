@@ -337,7 +337,6 @@ bool _isCommandCenterButtonsEnabled = true;
     [ _timeObserverIdDict setObject:_timeObserverId forKey: key];
 }
 
-
 - (void) disposeNotificationData: (BetterPlayer*)player{
     if (player == _notificationPlayer){
         _notificationPlayer = NULL;
@@ -627,6 +626,22 @@ bool _isCommandCenterButtonsEnabled = true;
                     [player showPlayerCoverView];
                 }
             }
+        } else if([@"hidePipAndControlCenterButton" isEqualToString:call.method]) {
+            NSDictionary* dataSource = [_dataSourceDict objectForKey:[self getTextureId:player]];
+            NSMutableDictionary *mutableDataSource = [dataSource mutableCopy];
+            [mutableDataSource setObject:@(false) forKey:@"showNotification"];
+            _dataSourceDict[[self getTextureId:player]] = mutableDataSource;
+
+            if (player.isPipMode) {
+                [_notificationPlayer setIsDisplayPipButtons:false];
+            } else {
+                [player resetPipController];
+            }
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+            [self disposeNotificationData:player];
+            [self removeCommandCenterTargetHandlers];
+            [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+            result(nil);
         } else {
             result(FlutterMethodNotImplemented);
         }

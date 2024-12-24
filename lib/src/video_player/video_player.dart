@@ -681,6 +681,10 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     _videoPlayerPlatform.setIsPlayerVideoVisible(_textureId, isVisible);
   }
 
+  Future<void> hidePipAndControlCenterButton() async {
+    await _videoPlayerPlatform.hidePipAndControlCenterButton(_textureId);
+  }
+
   static Future clearCache() async {
     return _videoPlayerPlatform.clearCache();
   }
