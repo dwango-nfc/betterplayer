@@ -97,6 +97,7 @@ internal class BetterPlayer(
         )
         loadControl = loadBuilder.build()
         exoPlayer = ExoPlayer.Builder(context)
+            .setRenderersFactory(DefaultRenderersFactory(context).setEnableDecoderFallback(true))
             .setTrackSelector(trackSelector)
             .setLoadControl(loadControl)
             .build()
