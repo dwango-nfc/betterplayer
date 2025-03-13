@@ -47,6 +47,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.view.TextureRegistry
+import com.google.android.exoplayer2.ui.R
 
 /**
  * Android platform implementation of the VideoPlayerPlugin.
